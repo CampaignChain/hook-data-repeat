@@ -1,0 +1,17 @@
+# This file is part of the CampaignChain package.
+#
+# (c) Sandro Groganz <sandro@campaignchain.com>
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
+
+hooks:
+    campaignchain-date-repeat:
+        display_name: Date Repeat Hook
+        identifier: date_repeat
+        services:
+            form: campaignchain.hook.form.type.campaignchain.date_repeat
+            entity: campaignchain.hook.campaignchain.date_repeat
+            event_subscriber: campaignchain.hook.listener.campaignchain.date_repeat
+        label: Repeat
+        type: trigger

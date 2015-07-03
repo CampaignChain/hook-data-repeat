@@ -1,0 +1,21 @@
+# This file is part of the CampaignChain package.
+#
+# (c) Sandro Groganz <sandro@campaignchain.com>
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
+
+assetic:
+    bundles:
+        - CampaignChainHookDateRepeatBundle
+    assets:
+        campaignchain_hook_date_repeat_css:
+            inputs:
+                - '@CampaignChainHookDateRepeatBundle/Resources/public/css/base.css'
+        campaignchain_hook_date_repeat_js:
+            inputs:
+                - '@CampaignChainHookDateRepeatBundle/Resources/public/js/base.js'
+twig:
+    form:
+        resources:
+            - 'CampaignChainHookDateRepeatBundle:Form:fields.html.twig'

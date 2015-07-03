@@ -1,0 +1,85 @@
+{#
+This file is part of the CampaignChain package.
+
+(c) Sandro Groganz <sandro@campaignchain.com>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+
+{% block campaignchain_hook_campaignchain_date_repeat_widget %}
+    {% block javascripts %}
+        {% javascripts '@campaignchain_hook_date_repeat_js' combine=true %}
+        <!-- @campaignchain_hook_date_repeat_js --><script src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock %}
+
+    {% spaceless %}
+        {{ form_widget(form) }}
+
+        <script>
+            var $dateRepeat = new CampaignChainHookDateRepeat();
+            var $dateRepeatFrequency = $(".campaignchain_core_campaign_campaignchain_hook_campaignchain_date_repeat_frequency-select2");
+
+            $dateRepeat.switchFrequency($dateRepeatFrequency.select2('val'));
+
+            $dateRepeatFrequency.change(function(){
+                $dateRepeat.switchFrequency($(this).val());
+            });
+        </script>
+    {% endspaceless %}
+{% endblock %}
+
+{% block campaignchain_hook_campaignchain_date_repeat_monthly_widget %}
+    {% spaceless %}
+        {% stylesheets '@campaignchain_hook_date_repeat_css' %}
+        <link href="{{ asset_url }}" type="text/css" rel="stylesheet" />
+        {% endstylesheets %}
+
+        <div id="campaignchain_core_campaign_campaignchain_hook_campaignchain_date_repeat_monthly">
+            {{ form_row(form.interval) }}
+            <label class="control-label col-lg-2 required" for="campaignchain_core_campaign_campaignchain_hook_campaignchain_date_repeat_monthly">Repeats by</label>
+            <div class="col-lg-10">
+            {{ form_row(form.repeat_by.children[0]) }}
+                {{ form_row(form.dom_occurrence) }}
+            {{ form_row(form.repeat_by.children[1]) }}
+                {{ form_row(form.dow_occurrence) }}
+                {{ form_row(form.day_of_week) }}
+            </div>
+        </div>
+
+        <script>
+            var $dateRepeat = new CampaignChainHookDateRepeat();
+            var $dateRepeatMonthly = $('input[name="campaignchain_core_campaign[campaignchain_hook_campaignchain_date_repeat][monthly][repeat_by]"]');
+
+            $dateRepeat.switchMonthly($dateRepeatMonthly.filter(':checked').val());
+
+            $dateRepeatMonthly.change(function() {
+                $dateRepeat.switchMonthly(this.value)
+            });
+        </script>
+    {% endspaceless %}
+{% endblock %}
+
+{% block campaignchain_hook_campaignchain_date_repeat_end_widget %}
+    {% spaceless %}
+        {# TODO: Throw error if next run would be after end date. #}
+        <div class="col-lg-12">
+        {{ bootstrap_set_style('horizontal') }}
+        {{ form_row(form.end.children[0]) }}
+        {{ form_row(form.end.children[1]) }} {{ form_row(form.occurrences) }}
+        {{ form_row(form.end.children[2]) }} {{ form_row(form.end_date) }}
+        </div>
+
+        <script>
+            var $dateRepeat = new CampaignChainHookDateRepeat();
+            var $dateRepeatEnd = $('input[name="campaignchain_core_campaign[campaignchain_hook_campaignchain_date_repeat][ends][end]"]');
+
+            $dateRepeat.switchEnd($dateRepeatEnd.filter(':checked').val());
+
+            $dateRepeatEnd.change(function() {
+                $dateRepeat.switchEnd(this.value)
+            });
+        </script>
+    {% endspaceless %}
+{% endblock %}

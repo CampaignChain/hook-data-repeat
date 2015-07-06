@@ -43,7 +43,7 @@ class DateRepeatType extends HookType
         if(!$hook){
             // Default values.
             $data['frequency'] = 'daily';
-            $data['start_date'] = $this->datetime->getUserNow();
+            $data['interval_start_date'] = $this->datetime->getUserNow();
         } else {
             // Fill form values from Hook data.
             if (strpos($hook->getInterval(),'days') !== false) {
@@ -77,20 +77,20 @@ class DateRepeatType extends HookType
                 $dataYearly['interval'] = str_replace('+', '', $intervalParts[0]);
             }
 
-            if($hook->getStartDate()){
-                $data['start_date'] = $hook->getStartDate();
+            if($hook->getIntervalStartDate()){
+                $data['interval_start_date'] = $hook->getIntervalStartDate();
             } else {
-                $data['start_date'] = $this->datetime->getUserNow();
+                $data['interval_start_date'] = $this->datetime->getUserNow();
             }
 
-            if($hook->getEndOccurrence()){
+            if($hook->getIntervalEndOccurrence()){
                 $dataEnds['end'] = 'occurrences';
-                $dataEnds['occurrences'] = $hook->getEndOccurrence();
+                $dataEnds['occurrences'] = $hook->getIntervalEndOccurrence();
             }
 
-            if($hook->getEndDate()){
+            if($hook->getIntervalEndDate()){
                 $dataEnds['end'] = 'date';
-                $dataEnds['end_date'] = $hook->getEndDate();
+                $dataEnds['interval_end_date'] = $hook->getIntervalEndDate();
             }
         }
 
@@ -141,11 +141,11 @@ class DateRepeatType extends HookType
             'attr' => array('label_col' => 4, 'widget_col' => 8)
         ));
         $builder
-            ->add('start_date', 'collot_datetime', array(
+            ->add('interval_start_date', 'collot_datetime', array(
                 'label' => 'Starts on',
                 'required' => true,
                 'mapped' => true,
-                'data' => $data['start_date'],
+                'data' => $data['interval_start_date'],
                 'constraints' => array(),
                 'model_timezone' => 'UTC',
                 'view_timezone' => $this->datetime->getUserTimezone(),
@@ -199,7 +199,7 @@ class DateRepeatType extends HookType
             $options = $data[$frequency];
             $startDate = \DateTime::createFromFormat(
                 $this->datetime->getUserDatetimeFormat('php_date'),
-                $data['start_date']
+                $data['interval_start_date']
             );
 
             // Preserver this for later adjustment. Might be a bug
@@ -268,8 +268,8 @@ class DateRepeatType extends HookType
             $form = $event->getForm();
             $form->add('interval', 'text');
 
-            $newData['start_date'] = $data['start_date'];
-            $form->add('start_date', 'collot_datetime', array(
+            $newData['interval_start_date'] = $data['interval_start_date'];
+            $form->add('interval_start_date', 'collot_datetime', array(
                 'required' => true,
                 'mapped' => true,
                 'constraints' => array(),
@@ -285,8 +285,8 @@ class DateRepeatType extends HookType
                 $nextRun->format('Y-m-d')
                 .' '.$startDateTime
             );
-            $newData['next_run'] = $nextRun->format($this->datetime->getUserDatetimeFormat('php_date'));
-            $form->add('next_run', 'collot_datetime', array(
+            $newData['interval_next_run'] = $nextRun->format($this->datetime->getUserDatetimeFormat('php_date'));
+            $form->add('interval_next_run', 'collot_datetime', array(
                 'required' => true,
                 'mapped' => true,
                 'constraints' => array(),
@@ -299,20 +299,20 @@ class DateRepeatType extends HookType
 
             // TODO: Throw error if next run after end date.
 
-            $newData['end_occurrence'] = null;
-            $newData['end_date'] = null;
+            $newData['interval_end_occurrence'] = null;
+            $newData['interval_end_date'] = null;
 
             switch($data['ends']['end']){
                 case 'occurrences':
-                    $newData['end_occurrence'] = $data['ends']['occurrences'];
+                    $newData['interval_end_occurrence'] = $data['ends']['occurrences'];
                     break;
                 case 'date':
-                    $newData['end_date'] = $data['ends']['end_date'];
+                    $newData['interval_end_date'] = $data['ends']['interval_end_date'];
                     break;
             }
 
-            $form->add('end_occurrence', 'integer');
-            $form->add('end_date', 'collot_datetime', array(
+            $form->add('interval_end_occurrence', 'integer');
+            $form->add('interval_end_date', 'collot_datetime', array(
                 'required' => false,
                 'mapped' => true,
                 'constraints' => array(),

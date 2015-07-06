@@ -7,11 +7,14 @@ For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
 #}
 
+Next run: {{ entity.getIntervalNextRun()|campaignchain_datetime }}<br/>
 Repeats: {{ entity.getIntervalHumanReadable() }}<br/>
-Starts: {{ entity.getStartDate()|campaignchain_datetime }}
-{% if entity.getEndOccurrence() %}
-    <br/>Ends after {{ entity.getEndOccurrence() }} occurrences
+{% if entity.getIntervalNextRun() != entity.getIntervalStartDate() %}
+    Starts: {{ entity.getIntervalStartDate()|campaignchain_datetime }}
 {% endif %}
-{% if entity.getEndDate() %}
-    <br/>Ends: {{ entity.getEndDate()|campaignchain_datetime }}
+{% if entity.getIntervalEndOccurrence() %}
+    <br/>Ends after {{ entity.getIntervalEndOccurrence() }} occurrences
+{% endif %}
+{% if entity.getIntervalEndDate() %}
+    <br/>Ends: {{ entity.getIntervalEndDate()|campaignchain_datetime }}
 {% endif %}

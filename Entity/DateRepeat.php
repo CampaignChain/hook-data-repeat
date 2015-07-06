@@ -70,7 +70,7 @@ class DateRepeat
      * @param \DateTime $startDate
      * @return Duration
      */
-    public function setStartDate(\DateTime $startDate = null)
+    public function setIntervalStartDate(\DateTime $startDate = null)
     {
         $this->startDate = $startDate;
 
@@ -82,7 +82,7 @@ class DateRepeat
      *
      * @return \DateTime
      */
-    public function getStartDate()
+    public function getIntervalStartDate()
     {
         return $this->startDate;
     }
@@ -116,7 +116,7 @@ class DateRepeat
      * @param \DateTime $nextRun
      * @return DateRepeat
      */
-    public function setNextRun($nextRun)
+    public function setIntervalNextRun($nextRun)
     {
         $this->nextRun = $nextRun;
 
@@ -128,7 +128,7 @@ class DateRepeat
      *
      * @return \DateTime
      */
-    public function getNextRun()
+    public function getIntervalNextRun()
     {
         return $this->nextRun;
     }
@@ -139,7 +139,7 @@ class DateRepeat
      * @param \DateTime $endDate
      * @return Duration
      */
-    public function setEndDate(\DateTime $endDate = null)
+    public function setIntervalEndDate(\DateTime $endDate = null)
     {
         $this->endDate = $endDate;
 
@@ -151,7 +151,7 @@ class DateRepeat
      *
      * @return \DateTime
      */
-    public function getEndDate()
+    public function getIntervalEndDate()
     {
         return $this->endDate;
     }
@@ -159,7 +159,7 @@ class DateRepeat
     /**
      * @param mixed $endOccurrence
      */
-    public function setEndOccurrence($endOccurrence)
+    public function setIntervalEndOccurrence($endOccurrence)
     {
         $this->endOccurrence = $endOccurrence;
     }
@@ -167,7 +167,7 @@ class DateRepeat
     /**
      * @return mixed
      */
-    public function getEndOccurrence()
+    public function getIntervalEndOccurrence()
     {
         return $this->endOccurrence;
     }

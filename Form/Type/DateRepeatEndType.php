@@ -62,7 +62,7 @@ class DateRepeatEndType extends AbstractType
                 )
             ));
         $builder
-            ->add('end_date', 'collot_datetime', array(
+            ->add('interval_end_date', 'collot_datetime', array(
                 'label' => false,
                 'required' => false,
                 'constraints' => array(),

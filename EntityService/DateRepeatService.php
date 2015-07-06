@@ -34,32 +34,32 @@ class DateRepeatService implements HookServiceTriggerInterface
         }
 
         $hook = new DateRepeat();
-        $hook->setStartDate($entity->getStartDate());
+        $hook->setIntervalStartDate($entity->getIntervalStartDate());
         $hook->setInterval($entity->getInterval());
-        $hook->setNextRun($entity->getNextRun());
-        $hook->setEndOccurrence($entity->getEndOccurrence());
-        $hook->setEndDate($entity->getEndDate());
+        $hook->setIntervalNextRun($entity->getIntervalNextRun());
+        $hook->setIntervalEndOccurrence($entity->getIntervalEndOccurrence());
+        $hook->setIntervalEndDate($entity->getIntervalEndDate());
 
         return $hook;
     }
 
     public function processHook($entity, $hook){
-        if($hook->getStartDate()){
-            $entity->setStartDate($hook->getStartDate());
+        if($hook->getIntervalStartDate()){
+            $entity->setIntervalStartDate($hook->getIntervalStartDate());
         }
 
         $entity->setInterval($hook->getInterval());
-        $entity->setNextRun($hook->getNextRun());
+        $entity->setIntervalNextRun($hook->getIntervalNextRun());
 
-        if($hook->getEndDate()){
-            $entity->setEndDate($hook->getEndDate());
-            $entity->setEndOccurrence(null);
-        } elseif($hook->getEndOccurrence()){
-            $entity->setEndOccurrence($hook->getEndOccurrence());
-            $entity->setEndDate(null);
+        if($hook->getIntervalEndDate()){
+            $entity->setIntervalEndDate($hook->getIntervalEndDate());
+            $entity->setIntervalEndOccurrence(null);
+        } elseif($hook->getIntervalEndOccurrence()){
+            $entity->setIntervalEndOccurrence($hook->getIntervalEndOccurrence());
+            $entity->setIntervalEndDate(null);
         } else {
-            $entity->setEndDate(null);
-            $entity->setEndOccurrence(null);
+            $entity->setIntervalEndDate(null);
+            $entity->setIntervalEndOccurrence(null);
         }
 
         // If the entity is an Activity and it equals the Operation, then
@@ -68,10 +68,10 @@ class DateRepeatService implements HookServiceTriggerInterface
         $class = get_class($entity);
         if(strpos($class, 'CoreBundle\Entity\Activity') !== false && $entity->getEqualsOperation() == true){
             $operation = $entity->getOperations()[0];
-            $operation->setStartDate($entity->getStartDate());
-            $operation->setEndDate($entity->getEndDate());
+            $operation->setIntervalStartDate($entity->getIntervalStartDate());
+            $operation->setIntervalEndDate($entity->getIntervalEndDate());
             $operation->setInterval($entity->getInterval());
-            $operation->setNextRun($entity->getNextRun());
+            $operation->setIntervalNextRun($entity->getIntervalNextRun());
             $operation->setTriggerHook($entity->getTriggerHook());
         }
 
@@ -89,7 +89,7 @@ class DateRepeatService implements HookServiceTriggerInterface
     public function isExecutable($entity){
         $now = new \DateTime('now', new \DateTimeZone('UTC'));
 
-        if($entity->getStartDate() <= $now){
+        if($entity->getIntervalStartDate() <= $now){
             return true;
         }
 

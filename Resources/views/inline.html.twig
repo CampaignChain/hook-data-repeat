@@ -7,7 +7,7 @@ For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.
 #}
 
-Repeats: {{ entity.getInterval() }}<br/>
+Repeats: {{ entity.getIntervalHumanReadable() }}<br/>
 Starts: {{ entity.getStartDate()|campaignchain_datetime }}
 {% if entity.getEndOccurrence() %}
     <br/>Ends after {{ entity.getEndOccurrence() }} occurrences

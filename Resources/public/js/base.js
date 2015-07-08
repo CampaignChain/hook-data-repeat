@@ -32,7 +32,7 @@ function CampaignChainHookDateRepeat(){
 
     // Fields of ends sub-form
     this.ends_occurrences = $('input[name="campaignchain_core_campaign[campaignchain_hook_campaignchain_date_repeat][ends][occurrences]"]');
-    this.ends_end_date = $('input[name="campaignchain_core_campaign[campaignchain_hook_campaignchain_date_repeat][ends][end_date]"]');
+    this.ends_end_date = $('input[name="campaignchain_core_campaign[campaignchain_hook_campaignchain_date_repeat][ends][interval_end_date]"]');
 }
 
 CampaignChainHookDateRepeat.prototype.switchFrequency = function(frequency)

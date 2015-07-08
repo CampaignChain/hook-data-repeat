@@ -34,6 +34,8 @@ class DateRepeatService implements HookServiceTriggerInterface
         }
 
         $hook = new DateRepeat();
+        $hook->setStartDate($entity->getStartDate());
+        $hook->setEndDate($entity->getEndDate());
         $hook->setIntervalStartDate($entity->getIntervalStartDate());
         $hook->setInterval($entity->getInterval());
         $hook->setIntervalNextRun($entity->getIntervalNextRun());
@@ -68,6 +70,8 @@ class DateRepeatService implements HookServiceTriggerInterface
         $class = get_class($entity);
         if(strpos($class, 'CoreBundle\Entity\Activity') !== false && $entity->getEqualsOperation() == true){
             $operation = $entity->getOperations()[0];
+            $operation->setStartDate($hook->getStartDate());
+            $operation->setEndDate($hook->getEndDate());
             $operation->setIntervalStartDate($entity->getIntervalStartDate());
             $operation->setIntervalEndDate($entity->getIntervalEndDate());
             $operation->setInterval($entity->getInterval());

@@ -14,4 +14,4 @@ hooks:
             entity: campaignchain.hook.campaignchain.date_repeat
             event_subscriber: campaignchain.hook.listener.campaignchain.date_repeat
         label: Repeat
-        type: trigger
+        type: default

@@ -58,7 +58,7 @@ class DateRepeatEndType extends AbstractType
                         'append' => 'occurrences',
                     ),
                     'label_col' => 2,
-                    'widget_col' => 3
+                    'widget_col' => 5
                 )
             ));
         $builder

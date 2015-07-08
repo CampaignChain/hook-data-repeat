@@ -111,6 +111,7 @@ class DateRepeatType extends HookType
                 'yearly'    => 'Yearly',
             ),
             'data' => $data['frequency'],
+            'attr' => array('label_col' => 2, 'widget_col' => 6)
         ));
         $builder->add('daily', new DateRepeatDailyType($this->container), array(
             'label' => false,

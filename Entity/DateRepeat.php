@@ -14,6 +14,8 @@ class DateRepeat
 {
     protected $startDate;
 
+    protected $intervalStartDate;
+
     /**
      * A string defining the interval range as a relative date format with a
      * value in the future. For example, if the report operation is supposed
@@ -30,14 +32,16 @@ class DateRepeat
     /**
      * The date when the Action will be run the next time.
      */
-    protected $nextRun;
+    protected $intervalNextRun;
+
+    protected $intervalEndDate;
 
     protected $endDate;
 
     /**
      * The number of times an Action is supposed to be repeated.
      */
-    protected $endOccurrence;
+    protected $intervalEndOccurrence;
 
     protected $timezone = 'UTC';
 
@@ -70,9 +74,9 @@ class DateRepeat
      * @param \DateTime $startDate
      * @return Duration
      */
-    public function setIntervalStartDate(\DateTime $startDate = null)
+    public function setIntervalStartDate(\DateTime $intervalStartDate = null)
     {
-        $this->startDate = $startDate;
+        $this->intervalStartDate = $intervalStartDate;
 
         return $this;
     }
@@ -84,7 +88,7 @@ class DateRepeat
      */
     public function getIntervalStartDate()
     {
-        return $this->startDate;
+        return $this->intervalStartDate;
     }
 
     /**
@@ -116,21 +120,83 @@ class DateRepeat
      * @param \DateTime $nextRun
      * @return DateRepeat
      */
-    public function setIntervalNextRun($nextRun)
+    public function setIntervalNextRun($intervalNextRun)
     {
-        $this->nextRun = $nextRun;
+        $this->intervalNextRun = $intervalNextRun;
 
         return $this;
     }
 
     /**
-     * Get nextRun
+     * Get intervalNextRun
      *
      * @return \DateTime
      */
     public function getIntervalNextRun()
     {
-        return $this->nextRun;
+        return $this->intervalNextRun;
+    }
+
+    /**
+     * Set intervalEndDate
+     *
+     * @param \DateTime $intervalEndDate
+     * @return Duration
+     */
+    public function setIntervalEndDate(\DateTime $intervalEndDate = null)
+    {
+        $this->intervalEndDate = $intervalEndDate;
+
+        return $this;
+    }
+
+    /**
+     * Get intervalEndDate
+     *
+     * @return \DateTime
+     */
+    public function getIntervalEndDate()
+    {
+        return $this->intervalEndDate;
+    }
+
+    /**
+     * @param mixed $intervalEndOccurrence
+     */
+    public function setIntervalEndOccurrence($intervalEndOccurrence)
+    {
+        $this->intervalEndOccurrence = $intervalEndOccurrence;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIntervalEndOccurrence()
+    {
+        return $this->intervalEndOccurrence;
+    }
+
+    /**
+     * Set startDate
+     *
+     * @param \DateTime $startDate
+     * @return Duration
+     */
+    public function setStartDate(\DateTime $startDate)
+    {
+        $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    /**
+     * Get startDate
+     *
+     * @return \DateTime
+     */
+    public function getStartDate()
+    {
+        return $this->startDate;
     }
 
     /**
@@ -139,7 +205,7 @@ class DateRepeat
      * @param \DateTime $endDate
      * @return Duration
      */
-    public function setIntervalEndDate(\DateTime $endDate = null)
+    public function setEndDate(\DateTime $endDate)
     {
         $this->endDate = $endDate;
 
@@ -151,24 +217,8 @@ class DateRepeat
      *
      * @return \DateTime
      */
-    public function getIntervalEndDate()
+    public function getEndDate()
     {
         return $this->endDate;
-    }
-
-    /**
-     * @param mixed $endOccurrence
-     */
-    public function setIntervalEndOccurrence($endOccurrence)
-    {
-        $this->endOccurrence = $endOccurrence;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIntervalEndOccurrence()
-    {
-        return $this->endOccurrence;
     }
 }

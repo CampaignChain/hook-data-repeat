@@ -11,6 +11,7 @@
 namespace CampaignChain\Hook\DateRepeatBundle\EntityService;
 
 use CampaignChain\CoreBundle\EntityService\HookServiceTriggerInterface;
+use CampaignChain\CoreBundle\Entity\Hook;
 use CampaignChain\Hook\DateRepeatBundle\Entity\DateRepeat;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Inflector\Inflector;
@@ -27,7 +28,7 @@ class DateRepeatService implements HookServiceTriggerInterface
         $this->em = $em;
     }
 
-    public function getHook($entity, $mode = HookServiceTriggerInterface::MODE_DEFAULT){
+    public function getHook($entity, $mode = Hook::MODE_DEFAULT){
         // If Action has not been created yet, return null for Hook.
         if(!$entity->getId()){
             return null;

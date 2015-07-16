@@ -27,7 +27,7 @@ class DateRepeatService implements HookServiceTriggerInterface
         $this->em = $em;
     }
 
-    public function getHook($entity){
+    public function getHook($entity, $mode = HookServiceTriggerInterface::MODE_DEFAULT){
         // If Action has not been created yet, return null for Hook.
         if(!$entity->getId()){
             return null;

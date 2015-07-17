@@ -40,7 +40,7 @@ class DateRepeatType extends HookType
         /*
          * Pre-fill form if data is available.
          */
-        if(!$hook){
+        if(!$hook || !$hook->getInterval()){
             // Default values.
             $data['frequency'] = 'daily';
             $data['interval_start_date'] = $this->datetime->getUserNow();

@@ -1,7 +1,7 @@
 {
     "name": "campaignchain/hook-date-repeat",
     "description": "Define the repeating dates of an entity.",
-    "keywords": ["hook"],
+    "keywords": ["hook","campaignchain"],
     "type": "campaignchain-hook",
     "homepage": "http://www.campaignchain.com",
     "license": "Apache-2.0",

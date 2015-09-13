@@ -1,6 +1,6 @@
 {
     "name": "campaignchain/hook-date-repeat",
-    "description": "Define the repeating dates of an entity.",
+    "description": "Define the repeating dates of an Action.",
     "keywords": ["hook","campaignchain"],
     "type": "campaignchain-hook",
     "homepage": "http://www.campaignchain.com",

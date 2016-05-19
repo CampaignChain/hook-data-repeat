@@ -87,28 +87,142 @@ class DateRepeatService implements HookServiceTriggerInterface
         if(is_array($hookData) && count($hookData)){
             $datetimeUtil = $this->container->get('campaignchain.core.util.datetime');
 
-            // Intercept if repeating date is supposed to be "now".
-            if(isset($hookData['execution_choice'])){
-                if($hookData['execution_choice'] == 'now'){
-                    $nowDate = new \DateTime('now');
-                    $hookData['date'] = $datetimeUtil->formatLocale($nowDate);
-                }
-                unset($hookData['execution_choice']);
-            }
+            $newData = $this->requestDataToPreSubmitData($hookData);
 
             $hook = new DateRepeat();
-            foreach($hookData as $property => $value){
-                // TODO: Research whether this is a security risk, e.g. if the property name has been injected via a REST post.
-                $method = 'set'.Inflector::classify($property);
-                if($method == 'setDate' && !is_object($value) && !$value instanceof \DateTime){
-                    // TODO: De-localize the value and change from user format to ISO8601.
-                    $value = new \DateTime($value, new \DateTimeZone($hookData['timezone']));
-                }
-                $hook->$method($value);
-            }
+            $hook->setInterval($newData['interval']);
+            $hook->setIntervalStartDate(
+                new \DateTime(
+                    $newData['interval_start_date'],
+                    new \DateTimeZone($newData['timezone'])
+                )
+            );
+            $hook->setIntervalNextRun(
+                new \DateTime(
+                    $newData['interval_next_run'],
+                    new \DateTimeZone($newData['timezone'])
+                )
+            );
+            $hook->setIntervalEndOccurrence($newData['interval_end_occurrence']);
+            $hook->setIntervalEndDate(
+                new \DateTime(
+                    $newData['interval_end_date'],
+                    new \DateTimeZone($newData['timezone'])
+                )
+            );
         }
 
         return $hook;
+    }
+
+    /**
+     * Maps a form's request data array to an array that fits with the
+     * DataRepeat entity's properties.
+     *
+     * Typically, you use this in a form's PRE_SUBMIT event.
+     *
+     * @param $data array
+     * @return array
+     */
+    public function requestDataToPreSubmitData($data)
+    {
+        $datetimeUtil = $this->container->get('campaignchain.core.util.datetime');
+
+        $frequency = $data['frequency'];
+        $options = $data[$frequency];
+        $startDate = \DateTime::createFromFormat(
+            $datetimeUtil->getUserDatetimeFormat('php_date'),
+            $data['interval_start_date']
+        );
+
+        // Preserve this for later adjustment. Might be a bug
+        // in PHP that sets time to 00:00 when working with relative dates?
+        $startDateTime = $startDate->format('H:i');
+
+        $newData = array();
+        $nextRun = null;
+
+        $newData['timezone'] = $data['timezone'];
+        $newData['interval_start_date'] = $data['interval_start_date'];
+
+        switch($frequency){
+            case 'daily':
+                $newData['interval'] = '+'.$options['interval'].' days';
+                $nextRun = $startDate->modify($newData['interval']);
+                break;
+            case 'weekly':
+                if(isset($options['day_of_week']) && strlen($options['day_of_week'])){
+                    $newData['interval'] = 'Next '.$options['day_of_week']
+                        .' +'.$options['interval'].' weeks';
+                } else {
+                    $newData['interval'] = '+'.$options['interval'].' weeks';
+                }
+                $nextRun = $startDate->modify($newData['interval']);
+                break;
+            case 'monthly':
+                switch($options['repeat_by']){
+                    case 'day_of_month':
+                        /*
+                         * Adding days in a "last day of this month" statement
+                         * does not work in PHP. Seems like this is because
+                         * the word "day" already occurres in it. Hence, we
+                         * work around this by adding the equivalent in hours.
+                         */
+                        $newData['interval'] = 'last day of this month '
+                            .'+'.($options['dom_occurrence']*24).' hours';
+
+                        $nextRun = $startDate->modify($newData['interval']);
+                        break;
+                    case 'day_of_week':
+                        $newData['interval'] = $options['dow_occurrence'].' '
+                            .$options['day_of_week'].' of next month';
+
+                        // Is the start date prior to the defined day of the month?
+                        $nextRunThisMonth = clone $startDate;
+                        $nextRunThisMonth->modify(
+                            $options['dow_occurrence'].' '
+                            .$options['day_of_week'].' of this month'
+                        );
+                        if($startDate < $nextRunThisMonth){
+                            $nextRun = $nextRunThisMonth;
+                        } else {
+                            $nextRun = $startDate->modify($newData['interval']);
+                        }
+                        break;
+                }
+
+                // Add the monthly interval.
+                $newData['interval'] .= ' +'.$options['interval'].' months';
+
+                break;
+            case 'yearly':
+                $newData['interval'] = '+'.$options['interval'].' years';
+                $nextRun = $startDate->modify($newData['interval']);
+                break;
+        }
+
+        // Make sure we preserve the time.
+        $nextRun = new \DateTime(
+            $nextRun->format('Y-m-d')
+            .' '.$startDateTime
+        );
+        $newData['interval_next_run'] = $nextRun->format($datetimeUtil->getUserDatetimeFormat('php_date'));
+
+        // TODO: Throw error if next run after end date.
+
+        $newData['interval_end_occurrence'] = null;
+        $newData['interval_end_date'] = null;
+
+        switch($data['ends']['end']){
+            case 'occurrences':
+                $newData['interval_end_occurrence'] = $data['ends']['occurrences'];
+                break;
+            case 'date':
+                $newData['interval_end_date'] = $data['ends']['interval_end_date'];
+                break;
+        }
+
+        return $newData;
     }
 
     public function tplInline($entity){

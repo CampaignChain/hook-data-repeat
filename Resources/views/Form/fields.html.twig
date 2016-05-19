@@ -8,11 +8,10 @@ file that was distributed with this source code.
 #}
 
 {% block campaignchain_hook_campaignchain_date_repeat_widget %}
-    {% block javascripts %}
-        {% javascripts '@campaignchain_hook_date_repeat_js' combine=true %}
-        <!-- @campaignchain_hook_date_repeat_js --><script src="{{ asset_url }}"></script>
-        {% endjavascripts %}
-    {% endblock %}
+    {% javascripts '@campaignchain_hook_date_repeat_js' combine=true %}
+        <!-- @campaignchain_hook_date_repeat_js -->
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 
     {% spaceless %}
         {{ form_widget(form) }}

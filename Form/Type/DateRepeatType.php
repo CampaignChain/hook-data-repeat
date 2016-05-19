@@ -21,11 +21,13 @@ class DateRepeatType extends HookType
 {
     protected $container;
     protected $datetime;
+    protected $dateRepeatService;
 
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
         $this->datetime = $this->container->get('campaignchain.core.util.datetime');
+        $this->dateRepeatService = $this->container->get('campaignchain.hook.campaignchain.date_repeat');
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -188,6 +190,10 @@ class DateRepeatType extends HookType
                 'data' => $dataEnds,
                 'attr' => array('label_col' => 2, 'widget_col' => 10)
             ));
+        $builder
+            ->add('timezone', 'hidden', array(
+                'data' => $this->datetime->getUserTimezone(),
+            ));
 
         /*
          * This event listener rewrites the array generated with the various
@@ -196,80 +202,11 @@ class DateRepeatType extends HookType
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) {
             $data = $event->getData();
 
-            $frequency = $data['frequency'];
-            $options = $data[$frequency];
-            $startDate = \DateTime::createFromFormat(
-                $this->datetime->getUserDatetimeFormat('php_date'),
-                $data['interval_start_date']
-            );
-
-            // Preserver this for later adjustment. Might be a bug
-            // in PHP that sets time to 00:00 when working with relative dates?
-            $startDateTime = $startDate->format('H:i');
-
-            $newData = array();
-            $nextRun = null;
-
-            switch($frequency){
-                case 'daily':
-                    $newData['interval'] = '+'.$options['interval'].' days';
-                    $nextRun = $startDate->modify($newData['interval']);
-                    break;
-                case 'weekly':
-                    if(isset($options['day_of_week']) && strlen($options['day_of_week'])){
-                        $newData['interval'] = 'Next '.$options['day_of_week']
-                            .' +'.$options['interval'].' weeks';
-                    } else {
-                        $newData['interval'] = '+'.$options['interval'].' weeks';
-                    }
-                    $nextRun = $startDate->modify($newData['interval']);
-                    break;
-                case 'monthly':
-                    switch($options['repeat_by']){
-                        case 'day_of_month':
-                            /*
-                             * Adding days in a "last day of this month" statement
-                             * does not work in PHP. Seems like this is because
-                             * the word "day" already occurres in it. Hence, we
-                             * work around this by adding the equivalent in hours.
-                             */
-                            $newData['interval'] = 'last day of this month '
-                                .'+'.($options['dom_occurrence']*24).' hours';
-
-                            $nextRun = $startDate->modify($newData['interval']);
-                            break;
-                        case 'day_of_week':
-                            $newData['interval'] = $options['dow_occurrence'].' '
-                                .$options['day_of_week'].' of next month';
-
-                            // Is the start date prior to the defined day of the month?
-                            $nextRunThisMonth = clone $startDate;
-                            $nextRunThisMonth->modify(
-                                $options['dow_occurrence'].' '
-                                .$options['day_of_week'].' of this month'
-                            );
-                            if($startDate < $nextRunThisMonth){
-                                $nextRun = $nextRunThisMonth;
-                            } else {
-                                $nextRun = $startDate->modify($newData['interval']);
-                            }
-                            break;
-                    }
-
-                    // Add the monthly interval.
-                    $newData['interval'] .= ' +'.$options['interval'].' months';
-
-                    break;
-                case 'yearly':
-                    $newData['interval'] = '+'.$options['interval'].' years';
-                    $nextRun = $startDate->modify($newData['interval']);
-                    break;
-            }
+            $newData = $this->dateRepeatService->requestDataToPreSubmitData($data);
 
             $form = $event->getForm();
             $form->add('interval', 'text');
-
-            $newData['interval_start_date'] = $data['interval_start_date'];
+            
             $form->add('interval_start_date', 'collot_datetime', array(
                 'required' => true,
                 'mapped' => true,
@@ -281,12 +218,6 @@ class DateRepeatType extends HookType
                 ),
             ));
 
-            // Make sure we preserve the time.
-            $nextRun = new \DateTime(
-                $nextRun->format('Y-m-d')
-                .' '.$startDateTime
-            );
-            $newData['interval_next_run'] = $nextRun->format($this->datetime->getUserDatetimeFormat('php_date'));
             $form->add('interval_next_run', 'collot_datetime', array(
                 'required' => true,
                 'mapped' => true,
@@ -297,20 +228,6 @@ class DateRepeatType extends HookType
                     'format' => $this->datetime->getUserDatetimeFormat('datepicker'),
                 ),
             ));
-
-            // TODO: Throw error if next run after end date.
-
-            $newData['interval_end_occurrence'] = null;
-            $newData['interval_end_date'] = null;
-
-            switch($data['ends']['end']){
-                case 'occurrences':
-                    $newData['interval_end_occurrence'] = $data['ends']['occurrences'];
-                    break;
-                case 'date':
-                    $newData['interval_end_date'] = $data['ends']['interval_end_date'];
-                    break;
-            }
 
             $form->add('interval_end_occurrence', 'integer');
             $form->add('interval_end_date', 'collot_datetime', array(

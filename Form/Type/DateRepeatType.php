@@ -55,8 +55,12 @@ class DateRepeatType extends HookType
             } elseif (strpos($hook->getInterval(),'weeks') !== false) {
                 $data['frequency'] = 'weekly';
                 $intervalParts = explode(' ',$hook->getInterval());
-                $dataWeekly['interval'] = str_replace('+', '', $intervalParts[2]);
-                $dataWeekly['day_of_week'] = $intervalParts[1];
+                if (strpos($hook->getInterval(),'Next') !== false) {
+                    $dataWeekly['interval'] = str_replace('+', '', $intervalParts[2]);
+                    $dataWeekly['day_of_week'] = $intervalParts[1];
+                } else {
+                    $dataWeekly['interval'] = str_replace('+', '', $intervalParts[0]);
+                }
             } elseif (strpos($hook->getInterval(),'month') !== false) {
                 $data['frequency'] = 'monthly';
                 $intervalParts = explode(' ',$hook->getInterval());
@@ -64,7 +68,7 @@ class DateRepeatType extends HookType
                 if (strpos($hook->getInterval(),'hours') !== false) {
                     // Day of month
                     $dataMonthly['repeat_by'] = 'day_of_month';
-                    $dataMonthly['interval'] = str_replace('+', '', $intervalParts[7]);
+                    $dataMonthly['interval'] = str_replace('+', '', $intervalParts[7]) + 1;
                     $dataMonthly['dom_occurrence'] = str_replace('+', '', $intervalParts[5])/24;
                 } else {
                     // Day of week

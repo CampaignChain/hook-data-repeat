@@ -17,8 +17,13 @@
 
 namespace CampaignChain\Hook\DateRepeatBundle;
 
+use CampaignChain\Hook\DateRepeatBundle\DependencyInjection\CampaignChainHookDateRepeatExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class CampaignChainHookDateRepeatBundle extends Bundle
 {
+    public function getContainerExtension()
+    {
+        return new CampaignChainHookDateRepeatExtension();
+    }
 }

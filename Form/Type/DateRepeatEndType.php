@@ -91,7 +91,7 @@ class DateRepeatEndType extends AbstractType
                     'forceParse' => true,
                     'minuteStep' => 5,
                     'pickerReferer ' => 'default', //deprecated
-                    'pickerPosition' => 'bottom-right',
+                    'pickerPosition' => 'top-right',
                     'viewSelect' => 'hour',
                     'showMeridian' => false,
                     //                    'initialDate' => $startDatePicker,

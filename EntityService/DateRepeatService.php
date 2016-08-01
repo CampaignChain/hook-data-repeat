@@ -62,6 +62,7 @@ class DateRepeatService implements HookServiceTriggerInterface
         $entity->setIntervalNextRun($hook->getIntervalNextRun());
 
         if($hook->getIntervalEndDate()){
+            dump($hook->getIntervalEndDate());exit;
             $entity->setIntervalEndDate($hook->getIntervalEndDate());
             $entity->setIntervalEndOccurrence(null);
         } elseif($hook->getIntervalEndOccurrence()){
@@ -98,25 +99,35 @@ class DateRepeatService implements HookServiceTriggerInterface
 
             $hook = new DateRepeat();
             $hook->setInterval($newData['interval']);
-            $hook->setIntervalStartDate(
-                new \DateTime(
-                    $newData['interval_start_date'],
-                    new \DateTimeZone($newData['timezone'])
-                )
-            );
+
+            if(isset($newData['interval_start_date'])) {
+                $hook->setIntervalStartDate(
+                    new \DateTime(
+                        $newData['interval_start_date'],
+                        new \DateTimeZone($newData['timezone'])
+                    )
+                );
+            }
+
             $hook->setIntervalNextRun(
                 new \DateTime(
                     $newData['interval_next_run'],
                     new \DateTimeZone($newData['timezone'])
                 )
             );
-            $hook->setIntervalEndOccurrence($newData['interval_end_occurrence']);
-            $hook->setIntervalEndDate(
-                new \DateTime(
-                    $newData['interval_end_date'],
-                    new \DateTimeZone($newData['timezone'])
-                )
-            );
+
+            if(isset($newData['interval_end_occurrence'])) {
+                $hook->setIntervalEndOccurrence($newData['interval_end_occurrence']);
+            }
+
+            if(isset($newData['interval_end_date'])) {
+                $hook->setIntervalEndDate(
+                    new \DateTime(
+                        $newData['interval_end_date'],
+                        new \DateTimeZone($newData['timezone'])
+                    )
+                );
+            }
         }
 
         return $hook;

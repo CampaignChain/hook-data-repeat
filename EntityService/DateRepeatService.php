@@ -62,7 +62,6 @@ class DateRepeatService implements HookServiceTriggerInterface
         $entity->setIntervalNextRun($hook->getIntervalNextRun());
 
         if($hook->getIntervalEndDate()){
-            dump($hook->getIntervalEndDate());exit;
             $entity->setIntervalEndDate($hook->getIntervalEndDate());
             $entity->setIntervalEndOccurrence(null);
         } elseif($hook->getIntervalEndOccurrence()){

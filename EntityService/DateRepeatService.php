@@ -98,25 +98,35 @@ class DateRepeatService implements HookServiceTriggerInterface
 
             $hook = new DateRepeat();
             $hook->setInterval($newData['interval']);
-            $hook->setIntervalStartDate(
-                new \DateTime(
-                    $newData['interval_start_date'],
-                    new \DateTimeZone($newData['timezone'])
-                )
-            );
+
+            if(isset($newData['interval_start_date'])) {
+                $hook->setIntervalStartDate(
+                    new \DateTime(
+                        $newData['interval_start_date'],
+                        new \DateTimeZone($newData['timezone'])
+                    )
+                );
+            }
+
             $hook->setIntervalNextRun(
                 new \DateTime(
                     $newData['interval_next_run'],
                     new \DateTimeZone($newData['timezone'])
                 )
             );
-            $hook->setIntervalEndOccurrence($newData['interval_end_occurrence']);
-            $hook->setIntervalEndDate(
-                new \DateTime(
-                    $newData['interval_end_date'],
-                    new \DateTimeZone($newData['timezone'])
-                )
-            );
+
+            if(isset($newData['interval_end_occurrence'])) {
+                $hook->setIntervalEndOccurrence($newData['interval_end_occurrence']);
+            }
+
+            if(isset($newData['interval_end_date'])) {
+                $hook->setIntervalEndDate(
+                    new \DateTime(
+                        $newData['interval_end_date'],
+                        new \DateTimeZone($newData['timezone'])
+                    )
+                );
+            }
         }
 
         return $hook;
@@ -172,7 +182,7 @@ class DateRepeatService implements HookServiceTriggerInterface
                         /*
                          * Adding days in a "last day of this month" statement
                          * does not work in PHP. Seems like this is because
-                         * the word "day" already occurres in it. Hence, we
+                         * the word "day" already occurs in it. Hence, we
                          * work around this by adding the equivalent in hours.
                          */
                         $newData['interval'] = 'last day of this month '
@@ -199,7 +209,7 @@ class DateRepeatService implements HookServiceTriggerInterface
                 }
 
                 // Add the monthly interval.
-                $newData['interval'] .= ' +'.$options['interval'].' months';
+                $newData['interval'] .= ' +'.($options['interval'] - 1).' months';
 
                 break;
             case 'yearly':

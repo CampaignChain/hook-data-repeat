@@ -17,7 +17,7 @@ parameters:
 services:
     campaignchain.hook.campaignchain.date_repeat:
         class: CampaignChain\Hook\DateRepeatBundle\EntityService\DateRepeatService
-        arguments: [ @doctrine.orm.entity_manager, @service_container ]
+        arguments: [ @doctrine, @service_container ]
     campaignchain.hook.form.type.campaignchain.date_repeat:
         class: CampaignChain\Hook\DateRepeatBundle\Form\Type\DateRepeatType
         arguments: [ @service_container ]

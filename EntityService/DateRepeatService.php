@@ -20,7 +20,7 @@ namespace CampaignChain\Hook\DateRepeatBundle\EntityService;
 use CampaignChain\CoreBundle\EntityService\HookServiceTriggerInterface;
 use CampaignChain\CoreBundle\Entity\Hook;
 use CampaignChain\Hook\DateRepeatBundle\Entity\DateRepeat;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Inflector\Inflector;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -29,10 +29,10 @@ class DateRepeatService implements HookServiceTriggerInterface
     protected $em;
     protected $container;
 
-    public function __construct(EntityManager $em, ContainerInterface $container)
+    public function __construct(ManagerRegistry $managerRegistry, ContainerInterface $container)
     {
         $this->container = $container;
-        $this->em = $em;
+        $this->em = $managerRegistry->getManager();
     }
 
     public function getHook($entity, $mode = Hook::MODE_DEFAULT){

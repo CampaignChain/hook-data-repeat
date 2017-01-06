@@ -24,7 +24,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Inflector\Inflector;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class DateRepeatService implements HookServiceTriggerInterface
+class DateRepeatService extends HookServiceTriggerInterface
 {
     protected $em;
     protected $container;
@@ -87,7 +87,9 @@ class DateRepeatService implements HookServiceTriggerInterface
             $operation->setTriggerHook($entity->getTriggerHook());
         }
 
-        return $entity;
+        $this->setEntity($entity);
+
+        return true;
     }
 
     public function arrayToObject($hookData){

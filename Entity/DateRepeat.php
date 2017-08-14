@@ -19,6 +19,8 @@ namespace CampaignChain\Hook\DateRepeatBundle\Entity;
 
 class DateRepeat
 {
+    protected $date;
+
     protected $startDate;
 
     protected $intervalStartDate;

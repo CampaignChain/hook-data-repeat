@@ -67,7 +67,7 @@ class DateRepeatDailyType extends AbstractType
             ]);
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'campaignchain_hook_campaignchain_date_repeat_daily';
     }

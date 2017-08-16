@@ -21,6 +21,8 @@ services:
     campaignchain.hook.form.type.campaignchain.date_repeat:
         class: CampaignChain\Hook\DateRepeatBundle\Form\Type\DateRepeatType
         arguments: [ '@service_container' ]
+        tags:
+            - { name: form.type }
     campaignchain.hook.listener.campaignchain.date_repeat:
         class: CampaignChain\Hook\DateRepeatBundle\EventListener\DateRepeatListener
         arguments: [ '@service_container' ]

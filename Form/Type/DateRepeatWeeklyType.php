@@ -18,7 +18,7 @@
 namespace CampaignChain\Hook\DateRepeatBundle\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -77,7 +77,7 @@ class DateRepeatWeeklyType extends AbstractType
         ));
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptionsOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setDefaults([

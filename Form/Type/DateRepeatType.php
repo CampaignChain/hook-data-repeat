@@ -20,7 +20,7 @@ namespace CampaignChain\Hook\DateRepeatBundle\Form\Type;
 use CampaignChain\CoreBundle\Form\Type\HookType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
@@ -39,6 +39,8 @@ class DateRepeatType extends HookType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->setOptions($options);
+
         $hook = $options['data'];
         $dataDaily = null;
         $dataWeekly = null;
@@ -256,8 +258,10 @@ class DateRepeatType extends HookType
         });
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
+
         $resolver
             ->setDefaults([
                 'validation_groups' => false,

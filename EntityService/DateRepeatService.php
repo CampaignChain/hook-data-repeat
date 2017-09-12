@@ -26,15 +26,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class DateRepeatService extends HookServiceTriggerInterface
 {
-    protected $em;
-    protected $container;
-
-    public function __construct(ManagerRegistry $managerRegistry, ContainerInterface $container)
-    {
-        $this->container = $container;
-        $this->em = $managerRegistry->getManager();
-    }
-
     public function getHook($entity, $mode = Hook::MODE_DEFAULT){
         // If Action has not been created yet, return null for Hook.
         if(!$entity->getId()){

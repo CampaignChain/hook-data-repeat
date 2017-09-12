@@ -17,20 +17,19 @@
 
 namespace CampaignChain\Hook\DateRepeatBundle\Form\Type;
 
+use SC\DatetimepickerBundle\Form\Type\DatetimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use CampaignChain\CoreBundle\Util\DateTimeUtil;
 
 class DateRepeatEndType extends AbstractType
 {
-    protected $container;
     protected $datetime;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(DateTimeUtil $dateTimeUtil)
     {
-        $this->container = $container;
-        $this->datetime = $this->container->get('campaignchain.core.util.datetime');
+        $this->datetime = $dateTimeUtil;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -45,9 +44,9 @@ class DateRepeatEndType extends AbstractType
             ->add('end', 'choice', array(
                 'label' => false,
                 'choices' => array(
-                    'never'   => 'Never',
-                    'occurrences' => 'After',
-                    'date'   => 'On',
+                    'Never' => 'never',
+                    'After' => 'occurrences',
+                    'On'   => 'date',
                 ),
                 'expanded' => true,
                 'multiple' => false,
@@ -57,7 +56,7 @@ class DateRepeatEndType extends AbstractType
         $builder
             ->add('occurrences', 'integer', array(
                 'label' => false,
-                'precision' => 0,
+                'scale' => 0,
                 'required' => false,
                 'attr' => array(
                     'min' => 0,
@@ -69,7 +68,7 @@ class DateRepeatEndType extends AbstractType
                 )
             ));
         $builder
-            ->add('interval_end_date', 'collot_datetime', array(
+            ->add('interval_end_date', DatetimeType::class, array(
                 'label' => false,
                 'required' => false,
                 'constraints' => array(),

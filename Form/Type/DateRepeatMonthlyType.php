@@ -20,17 +20,15 @@ namespace CampaignChain\Hook\DateRepeatBundle\Form\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use CampaignChain\CoreBundle\Util\DateTimeUtil;
 
 class DateRepeatMonthlyType extends AbstractType
 {
-    protected $container;
     protected $datetime;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(DateTimeUtil $dateTimeUtil)
     {
-        $this->container = $container;
-        $this->datetime = $this->container->get('campaignchain.core.util.datetime');
+        $this->datetime = $dateTimeUtil;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -44,7 +42,7 @@ class DateRepeatMonthlyType extends AbstractType
         $builder
             ->add('interval', 'integer', array(
                 'label' => 'Repeat every',
-                'precision' => 0,
+                'scale' => 0,
                 'required' => true,
                 'data' => $data['interval'],
                 'attr' => array(
@@ -61,8 +59,8 @@ class DateRepeatMonthlyType extends AbstractType
             ->add('repeat_by', 'choice', array(
                 'label' => 'Repeat by',
                 'choices' => array(
-                    'day_of_month'   => 'Day of the month',
-                    'day_of_week' => 'Day of the week',
+                    'Day of the month' => 'day_of_month',
+                    'Day of the week' => 'day_of_week',
                 ),
                 'expanded' => true,
                 'multiple' => false,
@@ -115,10 +113,10 @@ class DateRepeatMonthlyType extends AbstractType
             'expanded' => true,
             'multiple' => false,
             'choices' => array(
-                'first' => 'First',
-                'second' => 'Second',
-                'third' => 'Third',
-                'last' => 'Last',
+                'First' => 'first',
+                'Second' => 'second',
+                'Third' => 'third',
+                'Last' => 'last',
             ),
             'attr' => array(
                 'style' => 'inline',

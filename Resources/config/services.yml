@@ -17,10 +17,41 @@ parameters:
 services:
     campaignchain.hook.campaignchain.date_repeat:
         class: CampaignChain\Hook\DateRepeatBundle\EntityService\DateRepeatService
-        arguments: [ '@doctrine', '@service_container' ]
+        arguments:
+            - "@doctrine"
+            - "@campaignchain.core.util.datetime"
+            - "@templating"
+            - "@campaignchain.core.campaign"
     campaignchain.hook.form.type.campaignchain.date_repeat:
         class: CampaignChain\Hook\DateRepeatBundle\Form\Type\DateRepeatType
-        arguments: [ '@service_container' ]
+        arguments:
+            - '@campaignchain.core.util.datetime'
+            - '@campaignchain.hook.campaignchain.date_repeat'
+        tags:
+            - { name: form.type }
+    campaignchain.hook.form.type.campaignchain.date_repeat_daily:
+        class: CampaignChain\Hook\DateRepeatBundle\Form\Type\DateRepeatDailyType
+        arguments: [ '@campaignchain.core.util.datetime' ]
+        tags:
+            - { name: form.type }
+    campaignchain.hook.form.type.campaignchain.date_repeat_weekly:
+        class: CampaignChain\Hook\DateRepeatBundle\Form\Type\DateRepeatWeeklyType
+        arguments: [ '@campaignchain.core.util.datetime' ]
+        tags:
+            - { name: form.type }
+    campaignchain.hook.form.type.campaignchain.date_repeat_monthly:
+        class: CampaignChain\Hook\DateRepeatBundle\Form\Type\DateRepeatMonthlyType
+        arguments: [ '@campaignchain.core.util.datetime' ]
+        tags:
+            - { name: form.type }
+    campaignchain.hook.form.type.campaignchain.date_repeat_yearly:
+        class: CampaignChain\Hook\DateRepeatBundle\Form\Type\DateRepeatYearlyType
+        arguments: [ '@campaignchain.core.util.datetime' ]
+        tags:
+            - { name: form.type }
+    campaignchain.hook.form.type.campaignchain.date_repeat_end:
+        class: CampaignChain\Hook\DateRepeatBundle\Form\Type\DateRepeatEndType
+        arguments: [ '@campaignchain.core.util.datetime' ]
         tags:
             - { name: form.type }
     campaignchain.hook.listener.campaignchain.date_repeat:

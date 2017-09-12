@@ -18,23 +18,23 @@
 namespace CampaignChain\Hook\DateRepeatBundle\Form\Type;
 
 use CampaignChain\CoreBundle\Form\Type\HookType;
+use CampaignChain\Hook\DateRepeatBundle\EntityService\DateRepeatService;
+use SC\DatetimepickerBundle\Form\Type\DatetimeType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use CampaignChain\CoreBundle\Util\DateTimeUtil;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
 class DateRepeatType extends HookType
 {
-    protected $container;
     protected $datetime;
     protected $dateRepeatService;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(DateTimeUtil $dateTimeUtil, DateRepeatService $dateRepeatService)
     {
-        $this->container = $container;
-        $this->datetime = $this->container->get('campaignchain.core.util.datetime');
-        $this->dateRepeatService = $this->container->get('campaignchain.hook.campaignchain.date_repeat');
+        $this->datetime = $dateTimeUtil;
+        $this->dateRepeatService = $dateRepeatService;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -120,36 +120,36 @@ class DateRepeatType extends HookType
             'label' => 'Repeats',
             'mapped' => false,
             'choices' => array(
-                'daily'     => 'Daily',
-                'weekly'    => 'Weekly',
-                'monthly'   => 'Monthly',
-                'yearly'    => 'Yearly',
+                'Daily'     => 'daily',
+                'Weekly'    => 'weekly',
+                'Monthly'   => 'monthly',
+                'Yearly'    => 'yearly',
             ),
             'data' => $data['frequency'],
             'attr' => array('label_col' => 2, 'widget_col' => 6)
         ));
-        $builder->add('daily', new DateRepeatDailyType($this->container), array(
+        $builder->add('daily', DateRepeatDailyType::class, array(
             'label' => false,
             'mapped' => false,
             'required' => false,
             'data' => $dataDaily,
             'attr' => array('label_col' => 2, 'widget_col' => 10)
         ));
-        $builder->add('weekly', new DateRepeatWeeklyType($this->container), array(
+        $builder->add('weekly', DateRepeatWeeklyType::class, array(
             'label' => false,
             'mapped' => false,
             'required' => false,
             'data' => $dataWeekly,
             'attr' => array('label_col' => 2, 'widget_col' => 10)
         ));
-        $builder->add('monthly', new DateRepeatMonthlyType($this->container), array(
+        $builder->add('monthly', DateRepeatMonthlyType::class, array(
             'label' => false,
             'mapped' => false,
             'required' => false,
             'data' => $dataMonthly,
             'attr' => array('label_col' => 4, 'widget_col' => 8)
         ));
-        $builder->add('yearly', new DateRepeatYearlyType($this->container), array(
+        $builder->add('yearly', DateRepeatYearlyType::class, array(
             'label' => false,
             'mapped' => false,
             'required' => false,
@@ -157,7 +157,7 @@ class DateRepeatType extends HookType
             'attr' => array('label_col' => 4, 'widget_col' => 8)
         ));
         $builder
-            ->add('interval_start_date', 'collot_datetime', array(
+            ->add('interval_start_date', DatetimeType::class, array(
                 'label' => 'Starts on',
                 'required' => true,
                 'mapped' => true,
@@ -196,7 +196,7 @@ class DateRepeatType extends HookType
                 )
             ));
         $builder
-            ->add('ends', new DateRepeatEndType($this->container), array(
+            ->add('ends', DateRepeatEndType::class, array(
                 'label' => 'Ends',
                 'mapped' => false,
                 'required' => false,
@@ -220,7 +220,7 @@ class DateRepeatType extends HookType
             $form = $event->getForm();
             $form->add('interval', 'text');
             
-            $form->add('interval_start_date', 'collot_datetime', array(
+            $form->add('interval_start_date', DatetimeType::class, array(
                 'required' => true,
                 'mapped' => true,
                 'constraints' => array(),
@@ -231,7 +231,7 @@ class DateRepeatType extends HookType
                 ),
             ));
 
-            $form->add('interval_next_run', 'collot_datetime', array(
+            $form->add('interval_next_run', DatetimeType::class, array(
                 'required' => true,
                 'mapped' => true,
                 'constraints' => array(),
@@ -243,7 +243,7 @@ class DateRepeatType extends HookType
             ));
 
             $form->add('interval_end_occurrence', 'integer');
-            $form->add('interval_end_date', 'collot_datetime', array(
+            $form->add('interval_end_date', DatetimeType::class, array(
                 'required' => false,
                 'mapped' => true,
                 'constraints' => array(),

@@ -20,17 +20,15 @@ namespace CampaignChain\Hook\DateRepeatBundle\Form\Type;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use CampaignChain\CoreBundle\Util\DateTimeUtil;
 
 class DateRepeatWeeklyType extends AbstractType
 {
-    protected $container;
     protected $datetime;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(DateTimeUtil $dateTimeUtil)
     {
-        $this->container = $container;
-        $this->datetime = $this->container->get('campaignchain.core.util.datetime');
+        $this->datetime = $dateTimeUtil;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -44,7 +42,7 @@ class DateRepeatWeeklyType extends AbstractType
         $builder
             ->add('interval', 'integer', array(
                 'label' => 'Repeat every',
-                'precision' => 0,
+                'scale' => 0,
                 'required' => true,
                 'data' => $data['interval'],
                 'attr' => array(
